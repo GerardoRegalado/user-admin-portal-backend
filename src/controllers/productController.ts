@@ -20,3 +20,29 @@ export const getProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching products", error: err });
   }
 };
+
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const { name, description, price, category } = req.body as {
+      name?: string; description?: string; price?: number; category?: string;
+    };
+
+    const update: any = {};
+    if (name !== undefined) update.name = name;
+    if (description !== undefined) update.description = description;
+    if (price !== undefined) update.price = price;
+    if (category !== undefined) update.category = category;
+
+    const updated = await Product.findByIdAndUpdate(id, update, {
+      new: true,
+      runValidators: true
+    }).populate("category");
+
+    if (!updated) return res.status(404).json({ message: "Product not found" });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: "Error updating product", error: err });
+  }
+};
