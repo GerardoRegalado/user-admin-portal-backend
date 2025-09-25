@@ -255,8 +255,6 @@ Endpoints to **retrieve a specific resource** by `:id`.
 
 ## Deployment
 
-To deploy this project run
+To visit deployment please go to
 
-```bash
-npm run deploy
-```
+(https://user-admin-portal-backend.onrender.com)
