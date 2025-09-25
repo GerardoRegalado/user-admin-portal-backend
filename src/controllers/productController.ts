@@ -57,3 +57,14 @@ export const deleteProduct = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Error deleting product", error: err });
   }
 };
+
+export const getProductById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id).populate("category");
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching product", error: err });
+  }
+};

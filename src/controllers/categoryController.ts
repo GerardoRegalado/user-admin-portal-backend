@@ -62,3 +62,14 @@ export const deleteCategory = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Error deleting category", error: err });
   }
 };
+
+export const getCategoryById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findById(id);
+    if (!category) return res.status(404).json({ message: "Category not found" });
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching category", error: err });
+  }
+};
