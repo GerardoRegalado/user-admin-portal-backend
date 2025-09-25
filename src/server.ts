@@ -13,6 +13,9 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("✅ Server Running OK.");
+});
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
