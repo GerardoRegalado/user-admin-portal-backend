@@ -13,13 +13,13 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 
-// Rutas
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 
 mongoose.connect(process.env.MONGO_URI as string)
   .then(() => {
-    app.listen(3000, () => console.log("Servidor corriendo en http://localhost:3000"));
+    app.listen(3000, () => console.log("Server running http://localhost:3000"));
   })
-  .catch(err => console.error("Error al conectar a MongoDB:", err));
+  .catch(err => console.error("Error connecting with MongoDB:", err));

@@ -1,8 +1,5 @@
 import { Schema, model, Document } from "mongoose";
 
-
-// modificar sintaxis
-
 export interface UserInterface extends Document {
   name: string;
   username: string;

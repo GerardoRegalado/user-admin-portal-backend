@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import Product from "../models/Product";
 
+/**
+* Create Product
+**/
+
 export const createProduct = async (req: Request, res: Response) => {
   try {
     const { name, description, price, category } = req.body;
@@ -12,6 +16,10 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
+/**
+* Read Products
+**/
+
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const products = await Product.find().populate("category");
@@ -20,6 +28,26 @@ export const getProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching products", error: err });
   }
 };
+
+/**
+* Get product by ID
+**/
+
+export const getProductById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id).populate("category");
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching product", error: err });
+  }
+};
+
+
+/**
+* Update Product by ID
+**/
 
 export const updateProduct = async (req: Request, res: Response) => {
   try {
@@ -47,6 +75,10 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
+/**
+* Delete product by ID
+**/
+
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -55,16 +87,5 @@ export const deleteProduct = async (req: Request, res: Response) => {
     return res.status(204).send();
   } catch (err) {
     return res.status(500).json({ message: "Error deleting product", error: err });
-  }
-};
-
-export const getProductById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findById(id).populate("category");
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching product", error: err });
   }
 };

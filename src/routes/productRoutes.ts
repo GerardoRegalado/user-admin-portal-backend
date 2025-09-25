@@ -7,9 +7,10 @@ const router = express.Router();
 
 router.post("/", createProduct);
 router.get("/", getProducts);
+router.get("/:id", getProductById); 
+
+//(Protected routes)
 router.put("/:id", authenticateToken, updateProduct);
 router.delete("/:id", authenticateToken, deleteProduct);
-
-router.get("/:id", getProductById); 
 
 export default router;

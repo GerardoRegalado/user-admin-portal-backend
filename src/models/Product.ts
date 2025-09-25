@@ -5,7 +5,7 @@ export interface ProductDoc extends Document {
   name: string;
   description: string;
   price: number;
-  category: CategoryDoc["_id"]; // relación con categoría
+  category: CategoryDoc["_id"]; // category link
 }
 
 const productSchema = new Schema<ProductDoc>({

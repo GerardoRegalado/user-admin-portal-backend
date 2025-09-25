@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import Category from "../models/Category";
 import Product from "../models/Product";
 
+
+/** 
+* Create Category
+**/
+
 export const createCategory = async (req: Request, res: Response) => {
   try {
     const { name, description } = req.body;
@@ -13,6 +18,10 @@ export const createCategory = async (req: Request, res: Response) => {
   }
 };
 
+/** 
+* Read Categories
+**/
+
 export const getCategories = async (req: Request, res: Response) => {
   try {
     const categories = await Category.find();
@@ -21,6 +30,26 @@ export const getCategories = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching categories", error: err });
   }
 };
+
+/** 
+* Get Category by ID
+**/
+
+export const getCategoryById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findById(id);
+    if (!category) return res.status(404).json({ message: "Category not found" });
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching category", error: err });
+  }
+};
+
+
+/**
+* Update Categories by ID
+**/
 
 export const updateCategory = async (req: Request, res: Response) => {
   try {
@@ -43,6 +72,10 @@ export const updateCategory = async (req: Request, res: Response) => {
   }
 };
 
+/** 
+* Delete Category By ID
+**/
+
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -60,16 +93,5 @@ export const deleteCategory = async (req: Request, res: Response) => {
     return res.status(204).send();
   } catch (err) {
     return res.status(500).json({ message: "Error deleting category", error: err });
-  }
-};
-
-export const getCategoryById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const category = await Category.findById(id);
-    if (!category) return res.status(404).json({ message: "Category not found" });
-    res.json(category);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching category", error: err });
   }
 };

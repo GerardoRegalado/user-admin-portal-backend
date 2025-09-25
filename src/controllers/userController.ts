@@ -3,6 +3,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User, { UserInterface } from "../models/User";
 
+/**
+* Create User
+**/
+
 export const registerUser = async (req: Request, res: Response) => {
 
   const { name, username, email, password } = req.body;
@@ -21,6 +25,10 @@ export const registerUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error: err });
   }
 };
+
+/**
+* User Login
+**/
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -42,14 +50,37 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+* Read Users
+**/
+
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find().select("-password"); // excluye passwords
+    const users = await User.find().select("-password"); // exclude passwords
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: "Error fetching users", error: err });
   }
 };
+
+/**
+* Get Users by ID
+**/
+
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("-password"); // exclude password
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching user", error: err });
+  }
+};
+
+/**
+* Update Users by ID
+**/
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
@@ -59,7 +90,6 @@ export const updateUser = async (req: Request, res: Response) => {
       name?: string; username?: string; email?: string; password?: string;
     };
 
-    //tipear string el update
     const update: any = {};
     if (name !== undefined) update.name = name;
     if (username !== undefined) update.username = username;
@@ -69,14 +99,13 @@ export const updateUser = async (req: Request, res: Response) => {
     const updated = await User.findByIdAndUpdate(id, update, {
       new: true,
       runValidators: true,
-      // omitimos devolver password
       projection: { password: 0 }
     });
 
     if (!updated) return res.status(404).json({ message: "User not found" });
     res.json(updated);
   } catch (err: any) {
-    // 11000 => duplicate key (email/username únicos)
+    // 11000 => duplicate key (email/username)
     if (err?.code === 11000) {
       return res.status(409).json({ message: "Duplicate key", keyValue: err.keyValue });
     }
@@ -84,25 +113,19 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+* Delete Users by ID
+**/
+
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deleted = await User.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: "User not found" });
-    // 204: sin contenido
+    // 204: No content
     return res.status(204).send();
   } catch (err) {
     return res.status(500).json({ message: "Error deleting user", error: err });
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findById(id).select("-password"); // no mandamos password
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching user", error: err });
-  }
-};

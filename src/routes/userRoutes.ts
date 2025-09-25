@@ -8,10 +8,9 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", getUsers);
 
-//(protegido)
+//(Protected routes)
 router.put("/:id", authenticateToken, updateUser);
 router.delete("/:id", authenticateToken, deleteUser);
-
 router.get("/:id", authenticateToken, getUserById)
 
 export default router;
