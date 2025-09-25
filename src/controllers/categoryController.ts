@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Category from "../models/Category";
+import Product from "../models/Product";
 
 export const createCategory = async (req: Request, res: Response) => {
   try {
@@ -39,5 +40,25 @@ export const updateCategory = async (req: Request, res: Response) => {
       return res.status(409).json({ message: "Duplicate key", keyValue: err.keyValue });
     }
     res.status(500).json({ message: "Error updating category", error: err });
+  }
+};
+
+export const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const inUse = await Product.countDocuments({ category: id });
+    if (inUse > 0) {
+      return res.status(409).json({
+        message: "Category is in use by products",
+        productsUsingCategory: inUse
+      });
+    }
+
+    const deleted = await Category.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: "Category not found" });
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(500).json({ message: "Error deleting category", error: err });
   }
 };
